@@ -12,22 +12,22 @@
         auto: true,
         pause:5e3,
         controls: false,
-        onAfterSlide: function(currentSlide, totalSlides){
-            $("h2[id^='slide']").addClass("inactive");
-            $('#slide-'+currentSlide).toggleClass("inactive");
+        onBeforeSlide: function(currentSlide, totalSlides){
+            $("ul.slider > li").removeClass("active");
+            $('#slide-'+currentSlide).addClass("active");
         }
     });
-    $('#slide-0').click(function(){
+    $('#slide-0 > a').click(function(){
         slider.goToSlide(0);
         slider.startShow();
         return true;
     });
-    $('#slide-1').click(function(){
+    $('#slide-1 > a').click(function(){
         slider.goToSlide(1);
         slider.startShow();
         return true;
     });
-    $('#slide-2').click(function(){
+    $('#slide-2 > a').click(function(){
         slider.goToSlide(2);
         slider.startShow();
         return true;
@@ -36,10 +36,9 @@
 </script>|
 #{/set}
 
-<div class="container">
     <div class="hero-unit">
         <div class="row">
-            <div class="span7">
+            <div class="span5">
                 <h1>Mix-it</h1> 
                 <h2>Des idées pour tout de suite !</h2>
                 <p>X Avril 2012</p>
@@ -50,14 +49,14 @@
                 <a class="btn primary large" href="@{Dashboard.index()}">Mon Dashboard</a>
                 #{/else}
             </div>
-            <div class="span7"> 
+            <div class="span5"> 
                 <!-- You must explicitly specify the dimensions of the container element -->
                 <div id="wordcloud" style="width: 250px; height: 250px; position: relative;"></div>
                 <script type="text/javascript">
 var word_list = [
 #{list items:tags, as:'tag'}
 %{
-    String url = play.mvc.Router.reverse("Application.sessionsAndMembersByInterest").add("interest",tag.get('interest')).url;
+    String url = play.mvc.Router.reverse("Application.searchByInterest").add("interest",tag.get('interest')).url;
     url = java.net.URLDecoder.decode(url, "UTF-8");
 }%
     {text: "${tag.get('interest')}", url: "${url}", weight: ${tag.get('pound')} }      
@@ -72,18 +71,12 @@ $(document).ready(function() {
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="span-one-third">
-            <h2 id="slide-0">Derniers articles</h2>
-        </div>
-        <div class="span-one-third">
-            <h2 id="slide-1" class="inactive">Dernieres sessions</h2>
-        </div>
-        <div class="span-one-third">
-            <h2 id="slide-2" class="inactive">Derniers inscrits</h2>
-        </div>
-    </div>
-    <div class="row">
+    <ul class="tabs slider" style="margin-bottom: 0px">
+        <li id="slide-0" class="active"><a href="#">Derniers articles</a></li>
+        <li id="slide-1"><a href="#">Dernières sessions</a></li>
+        <li id="slide-2"><a href="#">Derniers inscrits</a></li>
+    </ul>
+    <div id="slider-container">
     <ul id="slider">
         <li>
             <div class="row">
@@ -106,7 +99,7 @@ $(document).ready(function() {
         <li>
             <div class="row">
                 #{list items:members, as:'member'}
-                <div style="padding-top: 20px" class="span-one-third">
+                <div style="padding-top: 10px" class="span-one-third">
                     #{member member /}
                 </div>
                 #{/list}
@@ -114,8 +107,7 @@ $(document).ready(function() {
         </li>
     </ul>
     </div>
-    <div class="row">
-        <div class="span16">
+
         <h4>Activités récentes</h4>
         <p id="activities"></p>
         <a id="moreActivities" href="#activities" class="btn small" onclick="loadMoreActivities()">&{'activities.more'}</a>  
@@ -146,6 +138,3 @@ $(document).ready(function() {
     // Initial loading : first page
     loadMoreActivities();
 </script>     
-        </div>
-      </div>
-</div><!-- /container --> 
