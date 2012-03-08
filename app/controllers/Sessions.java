@@ -2,22 +2,19 @@ package controllers;
 
 import helpers.JavaExtensions;
 import helpers.Lists;
-import play.*;
-
-import java.util.*;
-import models.SessionComment;
-import models.Member;
-import models.Role;
-import models.Session;
-import models.Staff;
-import models.Talk;
+import models.*;
 import org.apache.commons.lang.StringUtils;
+import play.Logger;
 import play.cache.Cache;
 import play.data.validation.Required;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
 import play.i18n.Messages;
 import play.libs.Images;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class Sessions extends PageController {
 
@@ -127,7 +124,7 @@ public class Sessions extends PageController {
     }
 
     public static void save(@Valid Talk talk, String[] interests, String newInterests) throws Throwable {
-        Logger.info("Tentative d'enregistrement de la session " + talk);
+        Logger.info("Tentative d'enregistrement de la session %s", talk);
         if (interests != null) {
             talk.updateInterests(interests);
         }
@@ -141,8 +138,8 @@ public class Sessions extends PageController {
             render("Sessions/edit.html", talk, speakers);
         }
         talk.update();
-        flash.success("Session " + talk + " enregistrée");
-        Logger.info("Session " + talk + " enregistrée");
+        flash.success("Session %s enregistrée", talk);
+        Logger.info("Session %s enregistrée", talk);
         show(talk.id, JavaExtensions.slugify(talk.title), true);
     }
     
@@ -161,4 +158,5 @@ public class Sessions extends PageController {
         talk.unvalidate();
         show(talkId, JavaExtensions.slugify(talk.title), true);
     }
+
 }

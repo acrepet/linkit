@@ -21,7 +21,10 @@
             <div class="span12">
                 <div class="row">
                     <div class="span12" style="margin-left:0px">
-                        <h2><a href="@{Profile.show(_arg.login)}" #{if !session.username}rel='twipsy' data-placement="right" title="Connectez-vous pour consulter son profil complet."#{/if}>${_arg}</a></h2>
+                        <h2>
+                            #{if _arg.ticketingRegistered}<i class="icon-check" style="color: green"></i> #{/if}
+                            <a href="@{Profile.show(_arg.login)}" #{if !session.username}rel='twipsy' data-placement="right" title="Connectez-vous pour consulter son profil complet."#{/if}>${_arg}</a>
+                        </h2>
                     </div>
                 </div>
                 <div class="row">
@@ -33,7 +36,7 @@
                     #{/list}
                     #{if _arg.sharedLinks}
                         #{list items:_arg.sharedLinks, as:'link'}
-                            <a class="sharedLink" href="${link.URL}" rel="twipsy" title="${link.name}" target="_blank"><img src="https://getfavicon.appspot.com/${link.URL.urlEncode()}"/></a>
+                            <a class="sharedLink" href="${link.URL}" rel="twipsy" title="${link.name.escapeHtmlAttr()}" target="_blank"><img src="https://getfavicon.appspot.com/${link.URL.urlEncode()}"/></a>
                         #{/list}
                     #{/if}
                 </div>

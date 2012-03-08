@@ -1,14 +1,16 @@
 package models;
 
-import java.util.List;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import models.activity.Activity;
 import models.activity.NewTalkActivity;
 import play.data.validation.Required;
 import play.modules.search.Indexed;
 import play.mvc.Router;
+
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import java.util.List;
+import models.activity.CommentSessionActivity;
 
 /**
  * A talk session
@@ -46,6 +48,11 @@ public class Talk extends Session {
         this.valid = true;
         save();
         new NewTalkActivity(this).save();
+        
+        // Publication des activités sur les hypothétiques commentaires existants
+        for (SessionComment comment : this.comments) {
+            new CommentSessionActivity(comment.author, this, comment).save();
+        }
     }
     
     public void unvalidate() {
