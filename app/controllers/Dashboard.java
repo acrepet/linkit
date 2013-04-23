@@ -1,18 +1,12 @@
 package controllers;
 
-import java.util.List;
-import java.util.Set;
-
-import models.Article;
-import models.Badge;
-import models.Comment;
-import models.Member;
-import models.Session;
-import models.Setting;
-import models.Suggestion;
+import models.*;
 import org.joda.time.DateTimeZone;
 import play.data.validation.Valid;
 import play.mvc.With;
+
+import java.util.List;
+import java.util.Set;
 
 @With(SecureLinkIt.class)
 public class Dashboard extends PageController {
@@ -24,7 +18,7 @@ public class Dashboard extends PageController {
         Setting setting = Setting.findByMember(member);
 
         List<Member> suggestedMembers = Suggestion.suggestedMembersFor(member, 5);
-        List<Session> suggestedSessions = Suggestion.suggestedSessionsFor(member, 5);
+        List<Session> suggestedSessions = Suggestion.suggestedSessionsFor(member, ConferenceEvent.CURRENT, 5);
         Set<Badge> suggestedBadges = Suggestion.missingBadgesFor(member);
 
         // Three recent articles
@@ -72,9 +66,15 @@ public class Dashboard extends PageController {
         index();
     }
 
-    public static void link(String loginToLink) {
-        Member.addLink(Security.connected(), loginToLink);
+    public static void link(Long memberId) {
+        Member.addLink(Security.connected(), memberId);
         flash.success("Link ajouté!");
         index();
+    }
+
+    public static void trombinoscope() {
+        Member member = Member.findByLogin(Security.connected());
+        List<Member> links = Member.findRegisteredLinkMembersOf(member);
+        render(member, links);
     }
 }

@@ -85,9 +85,7 @@
                                 <li><a href="@{Sessions.create(session.username)}">&{'menu.agenda.submit'}</a></li>
                             #{/if}
 }*
-*{ Masquage de l'agenda
-                                <li><a href="@{Agenda.index()}">Agenda</a></li>
-}*
+                                <li><a href="@{Sessions.planningMixIT13()}">Planning 2013</a></li>
 *{ Google calendar obsolète
                                 <li><a href="@{Agenda.google()}">Google Calendar</a></li>
 }*
@@ -134,6 +132,7 @@
                                 <li><a href="@{Operations.index()}">Opérations d'administration</a></li>
                                 <li><a href="@{Mailings.index()}">Mailings</a></li>
                                 <li><a href="@{Exports.index()}">Exports</a></li>
+                                <li><a href="@{admin.AdminPlanning.index()}">Création Planning</a></li>
                             </ul>
                         </li>
                         #{/secure.check}
@@ -146,6 +145,7 @@
                                 <li #{if request.controller=="Dashboard"}class="active"#{/if}><a href="@{Dashboard.index}">&{'menu.dashboard'}</a></li>
                                 <li><a href="@{Profile.show(session.username)}">&{'menu.login.profile'}</a></li>
                                 <li><a href="@{Profile.edit()}">&{'menu.login.edit'}</a></li>
+                                <li><a href="@{Dashboard.trombinoscope()}">&{'menu.login.trombinoscope'}</a></li>
                                 <li><a href="@{Dashboard.settings()}">&{'menu.login.settings'}</a></li>
                                 <li class="divider"></li>
                                 <li><a href="@{Secure.logout()}">&{'menu.login.logout'}</a></li>

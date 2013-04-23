@@ -3,6 +3,9 @@ package controllers;
 import helpers.JavaExtensions;
 import helpers.Lists;
 import models.*;
+import models.planning.PlanedSlot;
+import models.planning.Planning;
+import models.planning.Slot;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.cache.Cache;
@@ -12,14 +15,17 @@ import play.data.validation.Validation;
 import play.i18n.Messages;
 import play.libs.Images;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class Sessions extends PageController {
 
     public static void index() {
         listOn(ConferenceEvent.CURRENT);
+    }
+
+    public static void planningMixIT13() {
+        Planning planning = PlanedSlot.on(ConferenceEvent.CURRENT, true);
+        renderTemplate("Sessions/planning.html", planning);
     }
 
     public static void listOn(ConferenceEvent event) {
@@ -106,9 +112,12 @@ public class Sessions extends PageController {
     }
     
     public static void show(final Long sessionId, String slugify, boolean noCount) throws Throwable {
-        Session talk = Session.findById(sessionId);
+        Talk talk = Talk.findById(sessionId);
         notFoundIfNull(talk);
         checkReadAccess(talk);
+
+        PlanedSlot planedSlot = PlanedSlot.forTalkOn(talk, ConferenceEvent.CURRENT);
+        Slot slot = planedSlot != null ? planedSlot.slot : null;
 
         List<Member> voters = Vote.findVotersBySession(talk);
         Collections.shuffle(voters);
@@ -118,7 +127,7 @@ public class Sessions extends PageController {
             talk.lookedBy(Member.findByLogin(Security.connected()));
         }
         
-        render(talk, voters);
+        render(talk, voters, slot);
     }
 
     public static void postComment(
